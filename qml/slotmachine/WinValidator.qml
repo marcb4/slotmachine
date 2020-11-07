@@ -235,5 +235,7 @@ Item {
       line6.visible = false
       line7.visible = false
       line8.visible = false
+      line9.visible = false
+
     }
 }
