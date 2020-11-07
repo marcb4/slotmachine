@@ -64,5 +64,8 @@ HEADERS += \
 
 DISTFILES += \
     qml/BottomBar.qml \
+    qml/Symbol.qml \
     qml/TopBar.qml \
-    qml/config/qmldir
+    qml/config/qmldir \
+    qml/slotmachine/Symbol.qml \
+    qml/slotmachine/WinningLine.qml
