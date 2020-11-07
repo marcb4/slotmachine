@@ -31,6 +31,11 @@ GameWindow {
     property int betAmount: 4 // amount to bet per line
     property int creditAmount: 400 // player credit for gambling
 
+    // animate credit amount when changed
+    Behavior on creditAmount {
+      PropertyAnimation { duration: scene.betAmount * 50 }
+    }
+
     // fill game window with background
     Rectangle {
       anchors.fill: scene.gameWindowAnchorItem
@@ -63,6 +68,18 @@ GameWindow {
 
       // link signal to handler function
       onSpinEnded: scene.spinEnded()
+      // choose random delay to stop each reel for every spin
+//      onSpinStarted: {
+        // delay stop of each reel between 350 and 700 ms
+//        slotMachine.reelStopDelay = utils.generateRandomValueBetween(350, 700)
+//      }
+    }
+
+    WinValidator {
+      id: winValidator
+      height: slotMachine.height // height is the same as slotmachine height
+      width: Math.round(height /  240 * 408) // width/height ratio should remain constant
+      anchors.centerIn: scene.gameWindowAnchorItem
     }
       TopBar {
         id: topBar
@@ -161,15 +178,19 @@ GameWindow {
           scene.creditAmount -= scene.betAmount
 
           // start machine
+          winValidator.reset()
           var stopInterval = utils.generateRandomValueBetween(500, 1000) // between 500 and 1000 ms
           slotMachine.spin(stopInterval)
         }
       }
 
-      // handle spin is finished signal
+      // handle spin is finished signal -> validate result
       function spinEnded() {
         bottomBar.startActive = false
-        if(bottomBar.autoActive)
+        var won = winValidator.validate(slotMachine)
+        if(won)
+          winValidator.showWinningLines()
+        else if(bottomBar.autoActive)
           startSlotMachine()
       }
   }

@@ -1,5 +1,6 @@
 import Felgo 3.0
 import QtQuick 2.0
+import "../config"
 
 Item {
   id: winningLine
@@ -117,4 +118,63 @@ Item {
     // delete memory
     winningLine.__lineSymbols = []
   }
+
+  // validate if the player has won on the line
+  function validate(machine) {
+    // reset all local variables and private component properties
+    var length = 0
+    var currentType = null
+    __winningPositions = []
+    __winningTypes = []
+
+    // check all slot positions of the line
+    for(var i = 0; i < positions.length; i++) {
+      var pos = positions[i]
+      if(pos === null)
+        return false
+
+      // get current item for the slot position
+      var symbol = machine.getItemData(pos.reel, pos.row)
+      if(symbol === null)
+        return false
+
+      // first symbol defines start of the line
+      if(i === 0) {
+        currentType = symbol.type
+        length = 1
+      }
+      // next symbols may add to the winning line if the type matches
+      else {
+        // if new symbol type and no wildcards are involved -> stop (possible line has ended)
+        if(currentType !== symbol.type && symbol.type !== "rum" && currentType !== "rum") {
+          break;
+        }
+
+        // if old symbol was a wildcard, switch current type to new symbol
+        if(currentType === "rum")
+          currentType = symbol.type
+
+                // increase length counter
+        length++;
+      }
+
+      // current position and type count to the line -> memorize position and type
+      __winningPositions.push(pos)
+      __winningTypes.push(symbol.type)
+    }
+
+    // return false if line length is too short
+    if(length < 3)
+      return false
+
+    // calculate win amount and return true
+    var winFactor = SymbolConfig.getWinFactor(currentType, length)
+    winAmount = scene.betAmount * winFactor
+
+    // draw symbols on winning line (based on memorized positions and types) and return true
+    winningLine.drawLineSymbols(machine)
+    return true
+
+  }
 }
+
