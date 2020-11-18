@@ -1,6 +1,8 @@
 import Felgo 3.0
 import QtQuick 2.0
 import "slotmachine"
+
+
 GameWindow {
   id: gameWindow
 
@@ -101,7 +103,9 @@ GameWindow {
         onIncreaseBetClicked: scene.increaseBetAmount()
         onDecreaseBetClicked: scene.decreaseBetAmount()
         onMaxBetClicked: scene.maxBetAmount()
+        onIncreaseBetPressed: scene.increaseBetAmount()
       }
+
 
       // increase bet
       function increaseBetAmount() {

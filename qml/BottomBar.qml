@@ -1,5 +1,6 @@
 import Felgo 3.0
 import QtQuick 2.0
+import QtQuick 2.11
 
 Item {
   id: bottomBar
@@ -15,6 +16,8 @@ Item {
   signal decreaseBetClicked()
   signal increaseBetClicked()
   signal maxBetClicked()
+  signal increaseBetPressed()
+
 
   // add background
   Image {
@@ -99,12 +102,12 @@ Item {
       height: 23
       anchors.verticalCenter: parent.verticalCenter
       source: "../assets/ButtonPlus.png"
-
       MouseArea {
         anchors.fill: parent
         onClicked: increaseBetClicked()
       }
     }
+
 
     // maximum bet button
     Image {
